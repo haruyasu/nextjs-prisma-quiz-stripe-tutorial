@@ -2,16 +2,16 @@
 
 import { Button } from "@/components/ui/button"
 import { type Session } from "next-auth"
-import LoginButton from "@/components/auth/LoginButton"
 import UserNavigation from "@/components/auth/UserNavigation"
 import Link from "next/link"
 
 type NavigationProps = {
   session: Session | null
+  isSubscription: boolean
 }
 
 // ナビゲーション
-const Navigation: React.FC<NavigationProps> = ({ session }) => {
+const Navigation: React.FC<NavigationProps> = ({ session, isSubscription }) => {
   return (
     <header className="shadow-lg shadow-gray-100 mb-10">
       <div className="container mx-auto flex max-w-screen-md items-center justify-between px-2 py-3">
@@ -21,6 +21,11 @@ const Navigation: React.FC<NavigationProps> = ({ session }) => {
 
         {session?.user ? (
           <div className="flex items-center justify-center space-x-5">
+            {!isSubscription && (
+              <Button asChild variant="upgrade">
+                <Link href="/checkout">アップグレード</Link>
+              </Button>
+            )}
             <Button asChild variant="outline">
               <Link href="/quiz/new">クイズ作成</Link>
             </Button>

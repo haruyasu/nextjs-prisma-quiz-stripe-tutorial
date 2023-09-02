@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { signOut } from "next-auth/react"
 import UserAvatar from "@/components/auth/UserAvatar"
+import Link from "next/link"
 
 type UserNavigationProps = {
   user: Pick<User, "name" | "image" | "email">
@@ -36,6 +37,17 @@ const UserNavigation: React.FC<UserNavigationProps> = ({ user }) => {
         </div>
 
         <DropdownMenuSeparator />
+
+        <Link href="/checkout">
+          <DropdownMenuItem className="cursor-pointer">
+            構築済み決済
+          </DropdownMenuItem>
+        </Link>
+        <Link href="/payment">
+          <DropdownMenuItem className="cursor-pointer">
+            カスタム決済
+          </DropdownMenuItem>
+        </Link>
 
         <DropdownMenuItem
           onSelect={async (event) => {

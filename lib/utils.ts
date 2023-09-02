@@ -20,3 +20,6 @@ export function formatTimeDelta(seconds: number) {
 
   return parts.join(" ")
 }
+
+// クイズ生成最大回数
+export const MAX_COUNT = 1

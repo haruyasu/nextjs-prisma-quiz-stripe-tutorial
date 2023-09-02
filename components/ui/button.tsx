@@ -21,6 +21,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         correct: "bg-green-300 text-green-700 shadow-sm",
         incorrect: "bg-red-300 text-red-700 shadow-sm",
+        upgrade: "bg-gradient-to-r from-yellow-500 to-pink-500 text-white",
       },
       size: {
         default: "h-9 px-4 py-2",

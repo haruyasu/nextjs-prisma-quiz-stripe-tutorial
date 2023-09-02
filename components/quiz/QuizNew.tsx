@@ -24,8 +24,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useMutation } from "@tanstack/react-query"
 import { useToast } from "@/components/ui/use-toast"
+import { MAX_COUNT } from "@/lib/utils"
 import axios from "axios"
 import QuestionLoading from "@/components/question/QuestionLoading"
+import useSubscriptionModal from "@/hooks/useSubscriptionModal"
+import Link from "next/link"
 
 // 難易度
 const LEVELS = ["Easy", "Normal", "Hard"] as const
@@ -53,13 +56,16 @@ type InputType = z.infer<typeof schema>
 
 type QuizNewProps = {
   userId: string
+  isSubscription: boolean
+  count: number
 }
 
 // クイズ作成
-const QuizNew: React.FC<QuizNewProps> = ({ userId }) => {
+const QuizNew: React.FC<QuizNewProps> = ({ userId, isSubscription, count }) => {
   const router = useRouter()
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
+  const subscriptionModal = useSubscriptionModal()
 
   // フォームの状態
   const form = useForm<InputType>({
@@ -97,14 +103,19 @@ const QuizNew: React.FC<QuizNewProps> = ({ userId }) => {
         router.push(`/question/${quizId}`)
       },
 
-      onError: (error) => {
+      onError: (error: any) => {
         setLoading(false)
 
-        toast({
-          title: "クイズの作成に失敗しました",
-          description: "テーマを変更して、もう一度送信してください",
-          variant: "destructive",
-        })
+        if (error?.response?.status === 403) {
+          // サブスクリプションモーダルを表示
+          subscriptionModal.onOpen()
+        } else {
+          toast({
+            title: "クイズの作成に失敗しました",
+            description: "テーマを変更して、もう一度送信してください",
+            variant: "destructive",
+          })
+        }
       },
     })
   }
@@ -215,9 +226,26 @@ const QuizNew: React.FC<QuizNewProps> = ({ userId }) => {
           />
 
           <div className="text-center">
-            <Button disabled={loading} type="submit">
+            {!isSubscription && (
+              <div className="mb-2 text-sm">
+                {count} / {MAX_COUNT} フリープラン
+              </div>
+            )}
+
+            <Button disabled={loading} type="submit" className="w-full mb-2">
               自動生成
             </Button>
+
+            {!isSubscription && (
+              <Button
+                asChild
+                disabled={loading}
+                variant="upgrade"
+                className="w-full"
+              >
+                <Link href="/checkout">アップグレード</Link>
+              </Button>
+            )}
           </div>
         </form>
       </Form>
