@@ -1,3 +1,3 @@
-# 目指せクイズ王！Next.jsとPrismaで構築するAIクイズアプリ(ChatGPT、FunctionCalling)
+# サブスク入門！Next.js と Prisma、Stripe でサブスク機能を作ろう
 
-https://zenn.dev/hathle/books/next-prisma-quiz-book
+https://zenn.dev/hathle/books/next-prisma-quiz-stripe-book
