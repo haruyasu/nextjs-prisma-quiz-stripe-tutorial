@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model Account {
+  id                String  @id @default(uuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  quizzes       Quiz[]
+}
+
+enum LevelType {
+  Easy
+  Normal
+  Hard
+}
+
+enum LanguageType {
+  Japanese
+  English
+}
+
+model Quiz {
+  id         String       @id @default(cuid())
+  userId     String
+  startedAt  DateTime     @default(now())
+  finishedAt DateTime?
+  topic      String
+  level      LevelType
+  language   LanguageType
+  questions  Question[]
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Question {
+  id         String   @id @default(cuid())
+  question   String
+  answer     String
+  quizId     String
+  options    Json
+  isCorrect  Boolean?
+  userAnswer String?
+
+  quiz Quiz @relation(fields: [quizId], references: [id])
+
+  @@index([quizId])
+}
